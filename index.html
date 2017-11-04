@@ -8,7 +8,7 @@
   </head>
     <div class="header">
       <h1>Welcome to Party Mode</h1>
-      <h2>Luke and I need access to your motherfucking microphone</h3>
+      <h2>We'll kindly ask for access to your microphone before we begin the show.</h3>
     <div>
 
 
@@ -64,7 +64,7 @@
                 // getByteFrequencyData returns the amplitude for each frequency
                 analyser.getByteFrequencyData(self.spectrum);
                 self.data = adjustFreqData(self.spectrum);
-                console.log('in on audio process')
+
                 // getByteTimeDomainData gets volumes over the sample time
                 //analyser.getByteTimeDomainData(dataArray);
                 self.vol = self.getRMS(self.spectrum);
@@ -181,8 +181,7 @@
                 highs.push(v);
             }
           }
-          // console.log('BIG INFO')
-          // console.log({bass: bass, mids: mids, highs: highs});
+
           return {bass: bass, mids: mids, highs: highs}
         }
 
