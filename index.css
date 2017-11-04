@@ -1,0 +1,12 @@
+body {
+  background-image: url("stage-background.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+.header {
+  color: white;
+  text-align: center;
+  font-family: 'Satisfy';
+}
