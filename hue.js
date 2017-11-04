@@ -61,8 +61,6 @@ function updateLight(lightType, lightNum, dataPoint, volume, transitiontime) {
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    // myHeaders.append( "Content-Length", content.length.toString());
-    // myHeaders.append("X-Custom-Header", "ProcessThisImmediately");
 // }
 
     var request = new Request(url, {

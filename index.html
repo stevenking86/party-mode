@@ -4,7 +4,9 @@
     <title>Party Mode</title>
     <link rel="stylesheet" href="index.css">
     <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.145.0.min.js"></script>
     <script type='text/javascript' src='hue.js'></script>
+    <script type='text/javascript' src='aws.js'></script>
 
   </head>
     <div class="header">
@@ -316,9 +318,11 @@
         console.log('updateLights is being called');
         console.log(values);
 
-        updateLight("highs", 1, values.highs, values.vol, 25);
-        updateLight("mids", 2, values.mids, values.vol, 25);
-        updateLight("bass", 3, values.bass, values.vol, 0);
+        // updateLight("highs", 1, values.highs, values.vol, 25);
+        // updateLight("mids", 2, values.mids, values.vol, 25);
+        // updateLight("bass", 3, values.bass, values.vol, 0);
+
+        sendKinesisData(values);
       }
 
     </script>
