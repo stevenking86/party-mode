@@ -47,7 +47,6 @@ function adjustSaturation(volume) {
 // Hue range: 0 to 65535
 
 function updateLight(lightType, lightNum, dataPoint, volume, transitiontime) {
-    console.log('updateLight being called')
     var hue = adjustHue(lightType, dataPoint),
         sat = adjustSaturation(volume);
 
@@ -58,22 +57,25 @@ function updateLight(lightType, lightNum, dataPoint, volume, transitiontime) {
         transitiontime: transitiontime
     }
 
+    console.log(body);
+
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    // myHeaders.append( "Content-Length", content.length.toString());
+    // myHeaders.append("X-Custom-Header", "ProcessThisImmediately");
+// }
 
     var request = new Request(url, {
       method: 'PUT',
-      body: body,
+      body: JSON.stringify(body),
       headers: myHeaders
     })
 
-    fetch(request)
-        .then(function (res) {
-            console.log(res);
-        }, function(error) {
-          console.log(error);
-        })
-
+    fetch(request).then(function (res) {
+        console.log(res);
+    }, function(error) {
+        console.log(error);
+    })
 }
 
 
