@@ -3,6 +3,7 @@
   <head>
     <title>Party Mode</title>
     <link rel="stylesheet" href="index.css">
+    <script type='text/javascript' src='hue.js'></script>
     <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
 
   </head>
@@ -271,11 +272,11 @@
           highs: Math.round(self.getHighsVol())
         }
 
-        console.log(vals);
+        return vals
       };
 
-        this.printVals = function() {
-          printVals();
+        this.soundValues = function() {
+          return printVals();
         }
 
         this.matchNote = function (freq) {
@@ -308,9 +309,17 @@
       var Mic = new Microphone();
 
       setInterval(function() {
-        Mic.printVals();
+        updateLights(Mic.soundValues());
       }, 300);
 
+      var updateLights = function(values) {
+        console.log('updateLights is being called');
+        console.log(values);
+
+        updateLight("highs", 1, values.highs, values.vol, 25);
+        updateLight("mids", 2, values.mids, values.vol, 25);
+        updateLight("bass", 3, values.bass, values.vol, 0);
+      }
 
     </script>
   </body>
