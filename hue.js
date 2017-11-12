@@ -50,14 +50,17 @@ function updateLight(lightType, lightNum, dataPoint, volume, transitiontime) {
     var hue = adjustHue(lightType, dataPoint),
         sat = adjustSaturation(volume);
 
+    // var hueIp = "192.168.1.52"
+    var hueIp = document.getElementById('hueIP').value
+    var hueAuth = 'UP5z1ZV45PMbMEgtTmeSKrahFyQ8C1Jbs98L2ADp';
+    var hueUrl = "http://" + hueIp + "/api/" + hueAuth;
+
     var url = hueUrl + "/lights/" + lightNum + "/state"
     var body = {
         hue: hue,
         sat: sat,
         transitiontime: transitiontime
     }
-
-    console.log(body);
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -70,9 +73,9 @@ function updateLight(lightType, lightNum, dataPoint, volume, transitiontime) {
     })
 
     fetch(request).then(function (res) {
-        console.log(res);
+        // console.log(res);
     }, function(error) {
-        console.log(error);
+        // console.log(error);
     })
 }
 

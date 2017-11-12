@@ -11,7 +11,9 @@
   </head>
     <div class="header">
       <h1>Welcome to Party Mode</h1>
-      <h2>We'll kindly ask for access to your microphone before we begin the show.</h3>
+      <h2>We'll kindly ask for access to your microphone before we begin the show.</h2>
+      <p>Please enter your hue API.<span><a href="https://www.meethue.com/api/nupnp" target="_blank">Get it!</a></span></p>
+      <input id="hueIP" type="text" name="firstname" placeholder="000.000.000.">
     <div>
 
 
@@ -42,7 +44,7 @@
               startMic(new AudioContext());
             }
             catch (e) {
-              console.error(e);
+              // console.error(e);
               alert('Web Audio API is not supported in this browser');
             }
           }
@@ -53,7 +55,7 @@
             navigator.getUserMedia({ audio: true }, processSound, error);
 
             function processSound (stream) {
-              console.log('here in process sound')
+              // console.log('here in process sound')
 
               // analyser extracts frequency, waveform, and other data
               var analyser = context.createAnalyser();
@@ -87,7 +89,7 @@
             }
 
             function error () {
-              console.log(arguments);
+              // console.log(arguments);
             }
 
           }
@@ -315,8 +317,8 @@
       }, 300);
 
       var updateLights = function(values) {
-        console.log('updateLights is being called');
-        console.log(values);
+        // console.log('updateLights is being called');
+        // console.log(values);
 
         // updateLight("highs", 1, values.highs, values.vol, 25);
         // updateLight("mids", 2, values.mids, values.vol, 25);
