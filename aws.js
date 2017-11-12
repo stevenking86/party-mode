@@ -3,17 +3,22 @@ AWS.config.region = 'us-east-1';
 
 // Configure the credentials provider to use your identity pool
 AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: 'us-east-1:8231458e-045a-4d6f-8c40-00608ed25a42',
+    IdentityPoolId: 'us-east-1:8231458e-045a-4d6f-8c40-00608ed25a42'
 });
+
+//just found id pool id: us-east-1:3f6689c7-45c2-4e50-acc1-26b23e4dbd30
+
+// old id pool id: us-east-1:8231458e-045a-4d6f-8c40-00608ed25a42
+//arn arn:aws:iam::990418011469:role/Cognito_PartyModeUnauth_Role
 
 // Make the call to obtain credentials
 AWS.config.credentials.get(function(){
     // Credentials will be available when this function is called.
     var accessKeyId = AWS.config.credentials.accessKeyId;
     var secretAccessKey = AWS.config.credentials.secretAccessKey;
-    // var sessionToken = AWS.config.credentials.sessionToken;
-    console.log(accessKeyId);
-    console.log(secretAccessKey)
+    var sessionToken = AWS.config.credentials.sessionToken;
+    console.log('ACCESS KEY', accessKeyId);
+    console.log('SECRET', secretAccessKey)
 });
 
 
@@ -31,6 +36,7 @@ function sendKinesisData(vals) {
     apiVersion: '2015-08-04',
     accessKeyId: AWS.config.credentials.accessKeyId,
     secretAccessKey: AWS.config.credentials.secretAccessKey,
+    sessionToken: AWS.config.credentials.sessionToken,
     region: 'us-east-1'
 
   });
