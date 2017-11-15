@@ -1,23 +1,7 @@
-var hueIp = "192.168.1.52"
-var hueAuth = 'UP5z1ZV45PMbMEgtTmeSKrahFyQ8C1Jbs98L2ADp';
-var hueUrl = "http://" + hueIp + "/api/" + hueAuth;
-
-function generateData() {
-    var bass = Math.floor(Math.random() * (60 - 10 + 1)) + 10,
-        highs = Math.floor(Math.random() * (60 - 10 + 1)) + 10,
-        mids = Math.floor(Math.random() * (60 - 10 + 1)) + 10,
-        volume = Math.floor(Math.random() * 150);
-
-    return {
-        bass,
-        highs,
-        mids,
-        volume
-    };
-}
-
 function adjustHue(lightType, dataPoint) {
-    var hueMap = {
+    var hueMap, max, min;
+
+    hueMap = {
         bass: {
             min: 0,
             max: 18000
@@ -32,8 +16,8 @@ function adjustHue(lightType, dataPoint) {
         }
     };
 
-    var max = hueMap[lightType].max,
-        min = hueMap[lightType].min;
+    max = hueMap[lightType].max;
+    min = hueMap[lightType].min;
 
     return Math.round((dataPoint - 10) / (60 - 10) * (max - min) + min);
 }
@@ -47,36 +31,36 @@ function adjustSaturation(volume) {
 // Hue range: 0 to 65535
 
 function updateLight(lightType, lightNum, dataPoint, volume, transitiontime) {
-    var hue = adjustHue(lightType, dataPoint),
-        sat = adjustSaturation(volume);
+    var body, headers, hue, hueAuth, hueIp, hueUrl, request, sat, url
 
-    // var hueIp = "192.168.1.52"
-    var hueIp = document.getElementById('hueIP').value
-    var hueAuth = 'UP5z1ZV45PMbMEgtTmeSKrahFyQ8C1Jbs98L2ADp';
-    var hueUrl = "http://" + hueIp + "/api/" + hueAuth;
+    hue = adjustHue(lightType, dataPoint);
+    sat = adjustSaturation(volume);
 
-    var url = hueUrl + "/lights/" + lightNum + "/state"
-    var body = {
+    hueIp = document.getElementById("hueIP").value;
+    hueAuth = "UP5z1ZV45PMbMEgtTmeSKrahFyQ8C1Jbs98L2ADp";
+    hueUrl = "http://" + hueIp + "/api/" + hueAuth;
+
+    url = hueUrl + "/lights/" + lightNum + "/state";
+    body = {
         hue: hue,
         sat: sat,
         transitiontime: transitiontime
-    }
+    };
 
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-// }
+    headers = new Headers();
+    headers.append("Content-Type", "application/json");
 
-    var request = new Request(url, {
-      method: 'PUT',
-      body: JSON.stringify(body),
-      headers: myHeaders
-    })
+    request = new Request(url, {
+        method: "PUT",
+        body: JSON.stringify(body),
+        headers: headers
+    });
 
     fetch(request).then(function (res) {
         // console.log(res);
     }, function(error) {
         // console.log(error);
-    })
+    });
 }
 
 
