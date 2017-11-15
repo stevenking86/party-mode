@@ -22,19 +22,49 @@
     <script>
     var Mic = new Microphone();
 
+    var avgCounter = 0;
+    var volumes = [];
+    var numLights = 0;
+    var hueIp = null;
+
     setInterval(function() {
-      updateLights(Mic.soundValues());
-    }, 300);
+        hueIp = document.getElementById("hueIP").value;
 
-    var updateLights = function(values) {
-        console.log('updateLights is being called');
-        console.log(values);
+        if (hueIp) {
+            getNumLights(hueIp, numLights, function(lights) {
+                numLights = lights;
+                updateLights(Mic.soundValues());
+            })
+        }
+    }, 100);
 
-        updateLight("highs", 1, values.highs, values.vol, 25);
-        updateLight("mids", 2, values.mids, values.vol, 25);
-        updateLight("bass", 3, values.bass, values.vol, 0);
+    function updateCategorically(values) {
+        for (var i = 0; i < numLights; i++) {
+            if (i % 3 === 1) {
+                updateLight("highs", 1, values.highs, values.vol, hueIp);
+            } else if (i % 3 === 2) {
+                updateLight("mids", 2, values.mids, values.vol, hueIp);
+            } else if (i % 3 === 0) {
+                updateLight("bass", 3, values.bass, values.vol, hueIp);
+            }
+        }
+    }
 
-        sendKinesisData(values);
+    function updateLights(values) {
+        if (avgCounter <= 2) {
+            avgCounter += 1;
+            volumes.push(values.vol)
+        } else {
+            values.vol = Math.round((volumes[0] + volumes[1] + volumes[2]) / 3);
+
+            // console.log(values);
+
+            avgCounter = 0;
+            volumes = [];
+
+            updateCategorically(values);
+            sendKinesisData(values);
+        }
     }
     </script>
   </body>
