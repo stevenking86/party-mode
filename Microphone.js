@@ -40,10 +40,8 @@ function Microphone(_fft) {
                 analyser.getByteFrequencyData(self.spectrum);
                 self.data = adjustFreqData(self.spectrum);
 
-                // getByteTimeDomainData gets volumes over the sample time
-                //analyser.getByteTimeDomainData(dataArray);
                 self.vol = self.getRMS(self.spectrum);
-                // get peak
+
                 if (self.vol > self.peak_volume) {
                     self.peak_volume = self.vol;
                 }
@@ -63,46 +61,11 @@ function Microphone(_fft) {
         }
     }
 
-    ///////////////////////////////////////////////
-    ////////////// SOUND UTILITIES  //////////////
-    /////////////////////////////////////////////
-    this.mapSound = function (_me, _total, _min, _max) {
-        if (self.spectrum.length > 0) {
-            var min = _min || 0;
-            var max = _max || 100;
-            //actual new freq
-            var new_freq = Math.floor(_me / _total * self.data.length);
-
-            // map the volumes to a useful number
-            return map(self.data[new_freq], 0, self.peak_volume, min, max);
-        }
-
-        return 0;
-    };
-
-    this.mapRawSound = function (_me, _total, _min, _max) {
-        if (self.spectrum.length > 0) {
-            var min = _min || 0;
-            var max = _max || 100;
-            // actual new freq
-            var new_freq = Math.floor(_me / _total * (self.spectrum.length) / 2);
-
-            // map the volumes to a useful number
-            return map(self.spectrum[new_freq], 0, self.peak_volume, min, max);
-        }
-
-        return 0;
-    };
-
     this.getVol = function () {
         // map total volume to 100 for convenience
         self.volume = map(self.vol, 0, self.peak_volume, 0, 100);
 
         return self.volume;
-    };
-
-    this.getVolume = function () {
-        return this.getVol();
     };
 
     // A more accurate way to get overall volume
@@ -162,19 +125,6 @@ function Microphone(_fft) {
         };
     };
 
-
-    this.getBass = function () {
-        return this.getMix().bass;
-    };
-
-    this.getMids = function () {
-        return this.getMix().mids;
-    };
-
-    this.getHighs = function () {
-        return this.getMix().highs;
-    };
-
     this.getHighsVol = function (_min, _max) {
         var min = _min || 0;
         var max = _max || 100;
@@ -197,16 +147,12 @@ function Microphone(_fft) {
     };
 
     function adjustFreqData(frequencyData, ammt) {
-        // get frequency data, remove obsolete
-        // analyserNode.getByteFrequencyData(frequencyData);
-
         frequencyData.slice(0, frequencyData.length / 2);
         var new_length = ammt || 16;
         var newFreqs = [], prevRangeStart = 0, prevItemCount = 0;
 
         // looping for my new 16 items
         for (let j = 1; j <= new_length; j++) {
-            // define sample size
             var pow, itemCount, rangeStart;
 
             if (j % 2 === 1) {
@@ -220,14 +166,13 @@ function Microphone(_fft) {
             if (prevItemCount === 1) {
                 rangeStart = 0;
             } else {
-                rangeStart = prevRangeStart + (prevItemCount / 2);
+                rangeStart = prevRangeStart + prevItemCount / 2;
             }
 
             // get average value, add to new array
             var newValue = 0, total = 0;
 
             for (var k = rangeStart; k < rangeStart + itemCount; k++) {
-                // add up items and divide by total
                 total += frequencyData[k];
                 newValue = total / itemCount;
             }
@@ -244,17 +189,14 @@ function Microphone(_fft) {
         return (value - min1) / (max1 - min1) * (max2 - min2) + min2;
     }
 
-    var printVals = function () {
+    this.soundValues = function () {
         return {
-            vol: Math.round(self.vol),
+            vol: Math.round(this.getVol()),
+            // vol: Math.round(self.vol),
             bass: Math.round(self.getBassVol()),
             mids: Math.round(self.getMidsVol()),
             highs: Math.round(self.getHighsVol())
         };
-    };
-
-    this.soundValues = function () {
-        return printVals();
     };
 
     return this;
