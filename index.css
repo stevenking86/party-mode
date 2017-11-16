@@ -1,12 +1,27 @@
 body {
-  background-image: url("stage-background.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
+  background-color: black;
 }
 
+.content-wrapper {
+  max-height: 700px;
+}
 
 .header {
   color: white;
   text-align: center;
+}
+
+h1 {
   font-family: 'Satisfy';
+}
+
+.chart-wrapper {
+  margin: auto;
+  margin-top: 40px;
+  max-width: 800px;
+}
+
+#user-values {
+  color: white;
+  text-align: center;
 }

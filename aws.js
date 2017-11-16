@@ -13,9 +13,6 @@ AWS.config.credentials = new AWS.CognitoIdentityCredentials({
 AWS.config.credentials.get(function () {
     console.log("Credentials updated");
     // Credentials will be available when this function is called.
-    // var accessKeyId = AWS.config.credentials.accessKeyId;
-    // var secretAccessKey = AWS.config.credentials.secretAccessKey;
-    // var sessionToken = AWS.config.credentials.sessionToken;
 });
 
 
@@ -39,7 +36,48 @@ function sendKinesisData(vals) {
     });
 
     firehose.putRecord(firehoseParams, function (err, data) {
-        // if (err) console.log(err, err.stack); // an error occurred
-        // else     console.log(data);           // successful response
+        if (err) console.log(err, err.stack); // an error occurred
+        else     console.log(data);           // successful response
     });
 }
+
+function getS3Files() {
+  var params = {
+    Bucket: 'party-mode',
+    Prefix: '2017/11'
+  }
+
+  var s3 = new AWS.S3();
+
+  var data = {}
+
+  s3.listObjects(params, function (err, data) {
+    if(err)throw err;
+
+    var keys = data.Contents.map(function(content) {
+      return content.Key;
+    });
+
+    keys.map(function(key) {
+      var params = {
+        Bucket: 'party-mode',
+        Key: key
+      }
+
+      s3.getObject(params, function (err, data) {
+        if (err) {
+          console.log(err);
+        } else {
+          var splitString = data.Body.toString().split('}')
+          splitString.map(function(obj) {
+            allData.push(JSON.parse(obj + '}'))
+          })
+        }
+      });
+    })
+  });
+}
+
+// Access to S3 buckets: Had to change permissions on S3 bucket itself to allow CORS
+// Had to give access to my cognito user to access individual objects in bucket AND bucket itself.
+
