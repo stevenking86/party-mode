@@ -10,10 +10,10 @@ function setChart() {
           datasets: [{
               label: 'Average Global Listener Values',
               data: [
-                setVols(),
-                setHighs(),
-                setMids(),
-                setBass()
+                setSoundCategory('vol'),
+                setSoundCategory('bass'),
+                setSoundCategory('mids'),
+                setSoundCategory('highs')
                 ],
               backgroundColor: [
                   'rgba(255, 99, 132, 0.2)',
@@ -42,62 +42,17 @@ function setChart() {
   });
 }
 
-function setVols() {
-  var volumes = allData.map(function(obj) {
-    return obj.vol
+function setSoundCategory(soundCategory) {
+  var data = allData.map(function(obj) {
+    return obj[soundCategory];
   });
 
-  volumes = volumes.filter(function( element ) {
+  data = data.filter(function(element) {
     return element !== undefined;
   });
 
-  var volumeSum = volumes.reduce(function(a, b) { return a + b; });
-  var avg = volumeSum / volumes.length;
+  var sum = data.reduce(function(a, b) { return a + b });
+  var avg = sum / data.length;
 
-  return Math.floor(avg)
-}
-
-function setBass() {
-  var bass = allData.map(function(obj) {
-    return obj.bass
-  });
-
-  bass = bass.filter(function( element ) {
-    return element !== undefined;
-  });
-
-  var bassSum = bass.reduce(function(a, b) { return a + b; });
-  var avg = bassSum / bass.length;
-
-  return Math.floor(avg)
-}
-
-function setMids() {
-  var mids = allData.map(function(obj) {
-    return obj.mids
-  });
-
-  mids = mids.filter(function( element ) {
-    return element !== undefined;
-  });
-
-  var midsSum = mids.reduce(function(a, b) { return a + b; });
-  var avg = midsSum / mids.length;
-
-  return Math.floor(avg)
-}
-
-function setHighs() {
-  var highs = allData.map(function(obj) {
-    return obj.highs
-  });
-
-  highs = highs.filter(function( element ) {
-    return element !== undefined;
-  });
-
-  var highsSum = highs.reduce(function(a, b) { return a + b; });
-  var avg = highsSum / highs.length;
-
-  return Math.floor(avg)
+  return Math.floor(avg);
 }

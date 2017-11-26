@@ -51,7 +51,7 @@
 
     setInterval(function() {
         hueIp = document.getElementById("hueIP").value;
-        updateLights(Mic.soundValues());
+
         if (hueIp) {
             getNumLights(hueIp, numLights, function(lights) {
                 numLights = lights;
@@ -61,10 +61,10 @@
     }, 100);
 
     setInterval(function() {
-      setVols();
-      setBass()
-      setMids();
-      setHighs();
+      setSoundCategory('vol')
+      setSoundCategory('bass')
+      setSoundCategory('mids')
+      setSoundCategory('highs')
 
       if (document.getElementById("myChart").getAttribute('data-built') !== "true") {
         setChart();
