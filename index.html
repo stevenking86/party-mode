@@ -5,22 +5,44 @@
     <link rel="stylesheet" href="index.css">
     <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet">
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.145.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
     <script type='text/javascript' src='hue.js'></script>
     <script type='text/javascript' src='aws.js'></script>
     <script type='text/javascript' src='Microphone.js'></script>
+    <script type='text/javascript' src='vals-chart.js'></script>
 
   </head>
-    <div class="header">
-      <h1>Welcome to Party Mode</h1>
-      <h2>We'll kindly ask for access to your microphone before we begin the show.</h2>
-      <p>Please enter your hue API.<span><a href="https://www.meethue.com/api/nupnp" target="_blank">Get it!</a></span></p>
-      <input id="hueIP" type="text" name="firstname" placeholder="000.000.000.">
-    <div>
+    <body>
+      <div class="content-wrapper">
+        <div class="header">
+          <h1>Party Mode</h1>
+          <h2>We'll kindly ask for access to your microphone before we begin the show.</h2>
+          <p>Please enter your hue API. <span><a href="https://www.meethue.com/api/nupnp" target="_blank"> Get it!</a></span></p>
+          <input id="hueIP" type="text" name="firstname" placeholder="000.000.000.">
+        </div>
 
+        <div id="user-values">
+          <h3>Your Values</h3>
 
-  <body>
+          <p>
+            <span id="your-volume"></span>
+            <span id="your-highs"></span>
+            <span id="your-mids"></span>
+            <span id="your-bass"></span>
+          </p>
+        </div>
+
+        <div class="chart-wrapper">
+          <canvas id="myChart"></canvas>
+        </div>
+      </div>
+    </div>
+
     <script>
     var Mic = new Microphone();
+
+    allData = []
+    getS3Files();
 
     var avgCounter = 0;
     var volumes = [];
@@ -37,6 +59,17 @@
             })
         }
     }, 100);
+
+    setInterval(function() {
+      setSoundCategory('vol')
+      setSoundCategory('bass')
+      setSoundCategory('mids')
+      setSoundCategory('highs')
+
+      if (document.getElementById("myChart").getAttribute('data-built') !== "true") {
+        setChart();
+      }
+    }, 3000)
 
     function updateCategorically(values) {
         for (var i = 0; i < numLights; i++) {
@@ -57,14 +90,20 @@
         } else {
             values.vol = Math.round((volumes[0] + volumes[1] + volumes[2]) / 3);
 
-            // console.log(values);
-
             avgCounter = 0;
             volumes = [];
 
             updateCategorically(values);
             sendKinesisData(values);
+            showUserValues(values);
         }
+    }
+
+    function showUserValues(values) {
+      document.getElementById('your-volume').innerHTML = "Volume: " + values.vol;
+      document.getElementById('your-highs').innerHTML = "Highs: " + values.highs;
+      document.getElementById('your-mids').innerHTML = "Mids: " + values.mids;
+      document.getElementById('your-bass').innerHTML = "Bass: " + values.bass;
     }
     </script>
   </body>
