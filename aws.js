@@ -6,10 +6,6 @@ AWS.config.credentials = new AWS.CognitoIdentityCredentials({
     IdentityPoolId: "us-east-1:8231458e-045a-4d6f-8c40-00608ed25a42"
 });
 
-// old id pool id: us-east-1:8231458e-045a-4d6f-8c40-00608ed25a42
-// arn arn:aws:iam::990418011469:role/Cognito_PartyModeUnauth_Role
-
-// Make the call to obtain credentials
 AWS.config.credentials.get(function () {
     console.log("Credentials updated");
     // Credentials will be available when this function is called.
@@ -41,7 +37,7 @@ function sendKinesisData(vals) {
     });
 }
 
-function getS3Files() {
+function getS3Files(callback) {
   var params = {
     Bucket: 'party-mode',
     Prefix: '2017/11'
@@ -54,28 +50,39 @@ function getS3Files() {
   s3.listObjects(params, function (err, data) {
     if(err)throw err;
 
-    var keys = data.Contents.map(function(content) {
-      return content.Key;
-    });
+    soundData = []
+    var counter = 0
+    var finalNum = data.Contents.length
 
-    keys.map(function(key) {
+    data.Contents.forEach(function(content) {
       var params = {
         Bucket: 'party-mode',
-        Key: key
+        Key: content.Key
       }
 
       s3.getObject(params, function (err, data) {
+        counter += 1;
         if (err) {
           console.log(err);
         } else {
           var splitString = data.Body.toString().split('}')
-          splitString.map(function(obj) {
-            allData.push(JSON.parse(obj + '}'))
+
+
+          splitString.slice(0, splitString.length-1).forEach(function(obj) {
+              soundData.push(JSON.parse(obj + '}'))
           })
         }
+
+        checkDone(counter, finalNum, callback, soundData);
       });
     })
   });
+}
+
+function checkDone(counter, finalNum, callback, soundData) {
+  if (counter === finalNum) {
+    callback(soundData)
+  }
 }
 
 // Access to S3 buckets: Had to change permissions on S3 bucket itself to allow CORS

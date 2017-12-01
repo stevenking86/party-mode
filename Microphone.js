@@ -57,7 +57,7 @@ function Microphone(_fft) {
         }
 
         function error() {
-            // console.log(arguments);
+            console.log(arguments);
         }
     }
 
@@ -192,7 +192,6 @@ function Microphone(_fft) {
     this.soundValues = function () {
         return {
             vol: Math.round(this.getVol()),
-            // vol: Math.round(self.vol),
             bass: Math.round(self.getBassVol()),
             mids: Math.round(self.getMidsVol()),
             highs: Math.round(self.getHighsVol())

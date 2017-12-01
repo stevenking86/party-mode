@@ -41,8 +41,12 @@
     <script>
     var Mic = new Microphone();
 
-    allData = []
-    getS3Files();
+    var s3Data = []
+    getS3Files(function(data){
+      s3Data = data
+
+      setChart();
+    });
 
     var avgCounter = 0;
     var volumes = [];
@@ -51,12 +55,18 @@
 
     setInterval(function() {
         hueIp = document.getElementById("hueIP").value;
+        var formattedValues = formatValues(Mic.soundValues());
 
         if (hueIp) {
             getNumLights(hueIp, numLights, function(lights) {
                 numLights = lights;
-                updateLights(Mic.soundValues());
+                updateCategorically(formattedValues)
             })
+        }
+
+        if (avgCounter >= 2) {
+          sendKinesisData(formattedValues);
+          showUserValues(formattedValues);
         }
     }, 100);
 
@@ -65,10 +75,6 @@
       setSoundCategory('bass')
       setSoundCategory('mids')
       setSoundCategory('highs')
-
-      if (document.getElementById("myChart").getAttribute('data-built') !== "true") {
-        setChart();
-      }
     }, 3000)
 
     function updateCategorically(values) {
@@ -83,6 +89,7 @@
         }
     }
 
+    // Refactor this. Handle data massaging in a separate function. Decouple.
     function updateLights(values) {
         if (avgCounter <= 2) {
             avgCounter += 1;
@@ -93,10 +100,22 @@
             avgCounter = 0;
             volumes = [];
 
-            updateCategorically(values);
-            sendKinesisData(values);
             showUserValues(values);
         }
+    }
+
+    function formatValues(values) {
+      if (avgCounter <= 2) {
+          avgCounter += 1;
+          volumes.push(values.vol)
+      } else {
+          values.vol = Math.round((volumes[0] + volumes[1] + volumes[2]) / 3);
+
+          avgCounter = 0;
+          volumes = [];
+      }
+
+      return values;
     }
 
     function showUserValues(values) {

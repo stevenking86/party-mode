@@ -43,7 +43,7 @@ function setChart() {
 }
 
 function setSoundCategory(soundCategory) {
-  var data = allData.map(function(obj) {
+  var data = s3Data.map(function(obj) {
     return obj[soundCategory];
   });
 
@@ -51,8 +51,12 @@ function setSoundCategory(soundCategory) {
     return element !== undefined;
   });
 
-  var sum = data.reduce(function(a, b) { return a + b });
-  var avg = sum / data.length;
+  if (data.length) {
+    var sum = data.reduce(function(a, b) { return a + b });
+    var avg = sum / data.length;
 
-  return Math.floor(avg);
+    return Math.floor(avg);
+  }
+
+  return
 }
