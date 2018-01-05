@@ -1,3 +1,6 @@
+// Thanks to George Gally for this bit of code, which has been modified to suit our needs.
+// https://hackernoon.com/creative-coding-using-the-microphone-to-make-sound-reactive-art-part1-164fd3d972f3
+
 function Microphone(_fft) {
     var FFT_SIZE = _fft || 2048;
 
