@@ -77,6 +77,8 @@
       setSoundCategory('highs')
     }, 3000)
 
+
+    // One light is associated w/ highs, one lows, one mids.
     function updateCategorically(values) {
         for (var i = 0; i < numLights; i++) {
             if (i % 3 === 1) {
@@ -90,19 +92,19 @@
     }
 
     // Refactor this. Handle data massaging in a separate function. Decouple.
-    function updateLights(values) {
-        if (avgCounter <= 2) {
-            avgCounter += 1;
-            volumes.push(values.vol)
-        } else {
-            values.vol = Math.round((volumes[0] + volumes[1] + volumes[2]) / 3);
+    // function updateLights(values) {
+    //     if (avgCounter <= 2) {
+    //         avgCounter += 1;
+    //         volumes.push(values.vol)
+    //     } else {
+    //         values.vol = Math.round((volumes[0] + volumes[1] + volumes[2]) / 3);
 
-            avgCounter = 0;
-            volumes = [];
+    //         avgCounter = 0;
+    //         volumes = [];
 
-            showUserValues(values);
-        }
-    }
+    //         showUserValues(values);
+    //     }
+    // }
 
     function formatValues(values) {
       if (avgCounter <= 2) {
